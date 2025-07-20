@@ -52,6 +52,39 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				medical: {
+					DEFAULT: 'hsl(var(--medical))',
+					foreground: 'hsl(var(--medical-foreground))',
+					muted: 'hsl(var(--medical-muted))'
+				},
+				urgent: {
+					DEFAULT: 'hsl(var(--urgent))',
+					foreground: 'hsl(var(--urgent-foreground))',
+					muted: 'hsl(var(--urgent-muted))'
+				},
+				caution: {
+					DEFAULT: 'hsl(var(--caution))',
+					foreground: 'hsl(var(--caution-foreground))',
+					muted: 'hsl(var(--caution-muted))'
+				},
+				stable: {
+					DEFAULT: 'hsl(var(--stable))',
+					foreground: 'hsl(var(--stable-foreground))',
+					muted: 'hsl(var(--stable-muted))'
+				},
+				critical: {
+					DEFAULT: 'hsl(var(--critical))',
+					foreground: 'hsl(var(--critical-foreground))',
+					muted: 'hsl(var(--critical-muted))'
+				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))'
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
