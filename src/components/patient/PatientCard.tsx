@@ -32,15 +32,15 @@ export function PatientCard({ patient, onClick }: PatientCardProps) {
     switch (stage.toLowerCase()) {
       case 'icu':
       case 'critical':
-        return 'border-l-4 border-l-urgent bg-urgent/5';
+        return 'border-l-4 border-l-urgent';
       case 'post-op':
       case 'recovery':
-        return 'border-l-4 border-l-caution bg-caution/5';
+        return 'border-l-4 border-l-caution';
       case 'discharge':
       case 'stable':
-        return 'border-l-4 border-l-stable bg-stable/5';
+        return 'border-l-4 border-l-stable';
       default:
-        return 'border-l-4 border-l-medical bg-medical/5';
+        return 'border-l-4 border-l-medical';
     }
   };
 
