@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { BottomBar } from "@/components/layout/BottomBar";
 import { PatientCard } from "@/components/patient/PatientCard";
+import { FilterPopup } from "@/components/patient/FilterPopup";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PatientMeta } from "@/types/models";
 import { useNavigate } from "react-router-dom";
-import { Filter, SortAsc } from "lucide-react";
 
 // Mock data - replace with real API calls
 const mockPatients: PatientMeta[] = [
@@ -67,15 +67,26 @@ const mockPatients: PatientMeta[] = [
   }
 ];
 
-const pathwayFilters = ['all', 'surgical', 'emergency', 'consultation'];
-const stageFilters = ['all', 'pre-op', 'surgery', 'post-op', 'ICU', 'recovery', 'stable', 'discharge'];
-
 export default function PatientsList() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPathway, setSelectedPathway] = useState('all');
   const [selectedStage, setSelectedStage] = useState('all');
   const [showUrgentOnly, setShowUrgentOnly] = useState(false);
+
+  const getActiveFiltersCount = () => {
+    let count = 0;
+    if (selectedPathway !== 'all') count++;
+    if (selectedStage !== 'all') count++;
+    if (showUrgentOnly) count++;
+    return count;
+  };
+
+  const clearFilters = () => {
+    setSelectedPathway('all');
+    setSelectedStage('all');
+    setShowUrgentOnly(false);
+  };
 
   const filteredPatients = mockPatients.filter(patient => {
     const matchesSearch = patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -100,50 +111,21 @@ export default function PatientsList() {
       />
       
       <div className="p-4 space-y-4">
-        {/* Filter Bar */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2">
-            <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            {pathwayFilters.map((pathway) => (
-              <Button
-                key={pathway}
-                variant={selectedPathway === pathway ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedPathway(pathway)}
-                className="whitespace-nowrap"
-              >
-                {pathway === 'all' ? 'All Pathways' : pathway.charAt(0).toUpperCase() + pathway.slice(1)}
-              </Button>
-            ))}
-          </div>
-          
-          <div className="flex items-center gap-2 overflow-x-auto pb-2">
-            <SortAsc className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            {stageFilters.map((stage) => (
-              <Button
-                key={stage}
-                variant={selectedStage === stage ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedStage(stage)}
-                className="whitespace-nowrap"
-              >
-                {stage === 'all' ? 'All Stages' : stage.charAt(0).toUpperCase() + stage.slice(1)}
-              </Button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant={showUrgentOnly ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowUrgentOnly(!showUrgentOnly)}
-            >
-              Urgent Only
-            </Button>
-            <Badge variant="secondary" className="ml-auto">
-              {filteredPatients.length} patients
-            </Badge>
-          </div>
+        {/* Filter Controls */}
+        <div className="flex items-center justify-between">
+          <FilterPopup
+            selectedPathway={selectedPathway}
+            selectedStage={selectedStage}
+            showUrgentOnly={showUrgentOnly}
+            onPathwayChange={setSelectedPathway}
+            onStageChange={setSelectedStage}
+            onUrgentToggle={setShowUrgentOnly}
+            onClearFilters={clearFilters}
+            activeFiltersCount={getActiveFiltersCount()}
+          />
+          <Badge variant="secondary">
+            {filteredPatients.length} patients
+          </Badge>
         </div>
 
         {/* Patients Grid */}
@@ -165,9 +147,7 @@ export default function PatientsList() {
               className="mt-4"
               onClick={() => {
                 setSearchQuery('');
-                setSelectedPathway('all');
-                setSelectedStage('all');
-                setShowUrgentOnly(false);
+                clearFilters();
               }}
             >
               Clear Filters
