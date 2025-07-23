@@ -3,6 +3,8 @@ import { Header } from "@/components/layout/Header";
 import { BottomBar } from "@/components/layout/BottomBar";
 import { PatientCard } from "@/components/patient/PatientCard";
 import { FilterPopup } from "@/components/patient/FilterPopup";
+import { AddPatientForm } from "@/components/patient/AddPatientForm";
+import { NotificationsPopup } from "@/components/notifications/NotificationsPopup";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -83,6 +85,8 @@ export default function PatientsList() {
   const [selectedStage, setSelectedStage] = useState('all');
   const [showUrgentOnly, setShowUrgentOnly] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
+  const [showAddPatientForm, setShowAddPatientForm] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const getActiveFiltersCount = () => {
     let count = 0;
@@ -121,8 +125,9 @@ export default function PatientsList() {
         showAdd
         searchValue={searchQuery}
         onSearchChange={setSearchQuery}
-        onAdd={() => navigate('/patients/new')}
+        onAdd={() => setShowAddPatientForm(true)}
         notificationCount={3}
+        onNotificationClick={() => setShowNotifications(true)}
       />
       
       <div className="p-4 space-y-4">
@@ -225,6 +230,16 @@ export default function PatientsList() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <AddPatientForm 
+        open={showAddPatientForm}
+        onOpenChange={setShowAddPatientForm}
+      />
+
+      <NotificationsPopup 
+        open={showNotifications}
+        onOpenChange={setShowNotifications}
+      />
 
       <BottomBar />
     </div>

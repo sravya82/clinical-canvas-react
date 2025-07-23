@@ -13,6 +13,7 @@ interface HeaderProps {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   notificationCount?: number;
+  onNotificationClick?: () => void;
 }
 
 export function Header({
@@ -24,7 +25,8 @@ export function Header({
   onAdd,
   searchValue = "",
   onSearchChange,
-  notificationCount = 0
+  notificationCount = 0,
+  onNotificationClick
 }: HeaderProps) {
   return (
     <header className="h-16 border-b bg-card flex items-center justify-between px-4">
@@ -51,7 +53,7 @@ export function Header({
         )}
         
         <div className="relative">
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" onClick={onNotificationClick}>
             <Bell className="h-4 w-4" />
           </Button>
           {notificationCount > 0 && (
