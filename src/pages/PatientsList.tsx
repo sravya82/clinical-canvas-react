@@ -5,67 +5,9 @@ import { PatientCard } from "@/components/patient/PatientCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PatientMeta } from "@/types/models";
+import { mockPatients } from "./PatientDetail";
 import { useNavigate } from "react-router-dom";
 import { Filter, SortAsc } from "lucide-react";
-
-// Mock data - replace with real API calls
-const mockPatients: PatientMeta[] = [
-  {
-    id: '27e8d1ad',
-    name: 'Jane Doe',
-    qrCode: 'https://qrc.c/27e8d1ad',
-    pathway: 'surgical',
-    currentState: 'post-op',
-    diagnosis: 'Cholecystitis',
-    comorbidities: ['HTN', 'DM'],
-    updateCounter: 5,
-    lastUpdated: '2025-07-19T14:30:09Z'
-  },
-  {
-    id: '3b9f2c1e',
-    name: 'John Smith',
-    qrCode: 'https://qrc.c/3b9f2c1e',
-    pathway: 'emergency',
-    currentState: 'ICU',
-    diagnosis: 'Acute MI',
-    comorbidities: ['CAD', 'HTN'],
-    updateCounter: 12,
-    lastUpdated: '2025-07-19T16:45:22Z'
-  },
-  {
-    id: '8c4d5e2f',
-    name: 'Maria Garcia',
-    qrCode: 'https://qrc.c/8c4d5e2f',
-    pathway: 'consultation',
-    currentState: 'stable',
-    diagnosis: 'Osteoarthritis',
-    comorbidities: ['Obesity'],
-    updateCounter: 2,
-    lastUpdated: '2025-07-19T11:20:15Z'
-  },
-  {
-    id: '9d6e7f3g',
-    name: 'Robert Wilson',
-    qrCode: 'https://qrc.c/9d6e7f3g',
-    pathway: 'surgical',
-    currentState: 'pre-op',
-    diagnosis: 'Appendicitis',
-    comorbidities: [],
-    updateCounter: 8,
-    lastUpdated: '2025-07-19T13:15:30Z'
-  },
-  {
-    id: '1a2b3c4d',
-    name: 'Sarah Johnson',
-    qrCode: 'https://qrc.c/1a2b3c4d',
-    pathway: 'emergency',
-    currentState: 'recovery',
-    diagnosis: 'Pneumonia',
-    comorbidities: ['COPD', 'HTN'],
-    updateCounter: 3,
-    lastUpdated: '2025-07-19T09:45:18Z'
-  }
-];
 
 const pathwayFilters = ['all', 'surgical', 'emergency', 'consultation'];
 const stageFilters = ['all', 'pre-op', 'surgery', 'post-op', 'ICU', 'recovery', 'stable', 'discharge'];

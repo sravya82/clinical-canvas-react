@@ -12,19 +12,66 @@ import { QrCode, Copy, Phone, Mail, Calendar, MapPin } from "lucide-react";
 import { PatientMeta, TimelineEntry } from "@/types/models";
 
 // Mock data - replace with real API calls
-const mockPatient: PatientMeta = {
-  id: '27e8d1ad',
-  name: 'Jane Doe',
-  qrCode: 'https://qrc.c/27e8d1ad',
-  pathway: 'surgical',
-  currentState: 'post-op',
-  diagnosis: 'Cholecystitis',
-  comorbidities: ['HTN', 'DM'],
-  updateCounter: 5,
-  lastUpdated: '2025-07-19T14:30:09Z'
-};
+const mockPatients: PatientMeta[] = [
+  {
+    id: '27e8d1ad',
+    name: 'Jane Doe',
+    qrCode: 'https://qrc.c/27e8d1ad',
+    pathway: 'surgical',
+    currentState: 'post-op',
+    diagnosis: 'Cholecystitis',
+    comorbidities: ['HTN', 'DM'],
+    updateCounter: 5,
+    lastUpdated: '2025-07-19T14:30:09Z'
+  },
+  {
+    id: '3b9f2c1e',
+    name: 'John Smith',
+    qrCode: 'https://qrc.c/3b9f2c1e',
+    pathway: 'emergency',
+    currentState: 'ICU',
+    diagnosis: 'Acute MI',
+    comorbidities: ['CAD', 'HTN'],
+    updateCounter: 12,
+    lastUpdated: '2025-07-19T16:45:22Z'
+  },
+  {
+    id: '8c4d5e2f',
+    name: 'Maria Garcia',
+    qrCode: 'https://qrc.c/8c4d5e2f',
+    pathway: 'consultation',
+    currentState: 'stable',
+    diagnosis: 'Osteoarthritis',
+    comorbidities: ['Obesity'],
+    updateCounter: 2,
+    lastUpdated: '2025-07-19T11:20:15Z'
+  },
+  {
+    id: '9d6e7f3g',
+    name: 'Robert Wilson',
+    qrCode: 'https://qrc.c/9d6e7f3g',
+    pathway: 'surgical',
+    currentState: 'pre-op',
+    diagnosis: 'Appendicitis',
+    comorbidities: [],
+    updateCounter: 8,
+    lastUpdated: '2025-07-19T13:15:30Z'
+  },
+  {
+    id: '1a2b3c4d',
+    name: 'Sarah Johnson',
+    qrCode: 'https://qrc.c/1a2b3c4d',
+    pathway: 'emergency',
+    currentState: 'recovery',
+    diagnosis: 'Pneumonia',
+    comorbidities: ['COPD', 'HTN'],
+    updateCounter: 3,
+    lastUpdated: '2025-07-19T09:45:18Z'
+  }
+];
 
-const mockTimeline: TimelineEntry[] = [
+const mockTimelines: TimelineEntry[] = [
+  // Jane Doe
   {
     patientId: '27e8d1ad',
     state: 'Admission',
@@ -55,15 +102,68 @@ const mockTimeline: TimelineEntry[] = [
     dateIn: '2025-07-18T16:30:00Z',
     checklistIn: ['recovery-stable', 'pain-managed'],
     checklistOut: []
+  },
+  // John Smith
+  {
+    patientId: '3b9f2c1e',
+    state: 'Admission',
+    dateIn: '2025-07-19T10:00:00Z',
+    dateOut: '2025-07-19T12:00:00Z',
+    checklistIn: ['vitals-recorded'],
+    checklistOut: ['ICU-transfer']
+  },
+  {
+    patientId: '3b9f2c1e',
+    state: 'ICU',
+    dateIn: '2025-07-19T12:00:00Z',
+    checklistIn: ['monitoring', 'medication-started'],
+    checklistOut: []
+  },
+  // Robert Wilson
+  {
+    patientId: '9d6e7f3g',
+    state: 'Admission',
+    dateIn: '2025-07-18T09:00:00Z',
+    dateOut: '2025-07-18T11:00:00Z',
+    checklistIn: ['vitals-recorded'],
+    checklistOut: ['pre-op-clearance']
+  },
+  {
+    patientId: '9d6e7f3g',
+    state: 'Pre-Op',
+    dateIn: '2025-07-18T11:00:00Z',
+    checklistIn: ['consent-signed'],
+    checklistOut: []
+  },
+  // Sarah Johnson
+  {
+    patientId: '1a2b3c4d',
+    state: 'Admission',
+    dateIn: '2025-07-17T08:00:00Z',
+    dateOut: '2025-07-17T10:00:00Z',
+    checklistIn: ['vitals-recorded'],
+    checklistOut: ['recovery-transfer']
+  },
+  {
+    patientId: '1a2b3c4d',
+    state: 'recovery',
+    dateIn: '2025-07-17T10:00:00Z',
+    checklistIn: ['oxygen-started'],
+    checklistOut: []
   }
+  // Maria Garcia (consultation) has no timeline
 ];
 
+export { mockPatients };
 export default function PatientDetail() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Mock patient demographics
+  const patient = mockPatients.find((p) => p.id === id);
+  const timeline = mockTimelines.filter((t) => t.patientId === id);
+
+  // Mock patient demographics (could be extended per patient)
   const demographics = {
     mrn: 'MRN123456',
     dob: '1975-03-15',
@@ -78,6 +178,16 @@ export default function PatientDetail() {
     }
   };
 
+  if (!patient) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <Header title="Patient Details" showBack onBack={() => navigate('/patients')} />
+        <div className="text-2xl font-bold mt-8">Patient not found</div>
+        <Button className="mt-4" onClick={() => navigate('/patients')}>Back to Patients</Button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <Header 
@@ -86,13 +196,12 @@ export default function PatientDetail() {
         onBack={() => navigate('/patients')}
         notificationCount={2}
       />
-      
       <div className="p-4 space-y-6">
         {/* Patient Hero */}
         <Card className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-foreground mb-2">{mockPatient.name}</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">{patient.name}</h1>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
@@ -114,10 +223,10 @@ export default function PatientDetail() {
                 <div className="space-y-1">
                   <div className="text-muted-foreground">Pathway:</div>
                   <Badge variant="outline" className="capitalize">
-                    {mockPatient.pathway}
+                    {patient.pathway}
                   </Badge>
                   <div className="text-muted-foreground">Current Stage:</div>
-                  <StageChip stage={mockPatient.currentState} variant="caution" />
+                  <StageChip stage={patient.currentState} variant="caution" />
                 </div>
               </div>
             </div>
@@ -131,14 +240,13 @@ export default function PatientDetail() {
           <div className="space-y-3">
             <div>
               <span className="text-sm text-muted-foreground">Primary Diagnosis:</span>
-              <div className="font-medium">{mockPatient.diagnosis}</div>
+              <div className="font-medium">{patient.diagnosis}</div>
             </div>
-            
-            {mockPatient.comorbidities.length > 0 && (
+            {patient.comorbidities.length > 0 && (
               <div>
                 <span className="text-sm text-muted-foreground">Comorbidities:</span>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  {mockPatient.comorbidities.map((comorbidity) => (
+                  {patient.comorbidities.map((comorbidity) => (
                     <Badge key={comorbidity} variant="secondary">
                       {comorbidity}
                     </Badge>
@@ -146,7 +254,6 @@ export default function PatientDetail() {
                 </div>
               </div>
             )}
-
             {demographics.allergies.length > 0 && (
               <div>
                 <span className="text-sm text-muted-foreground">Allergies:</span>
@@ -160,7 +267,6 @@ export default function PatientDetail() {
               </div>
             )}
           </div>
-
           {/* Emergency Contact */}
           <div className="mt-4 pt-4 border-t">
             <span className="text-sm text-muted-foreground">Emergency Contact:</span>
@@ -179,7 +285,6 @@ export default function PatientDetail() {
             </div>
           </div>
         </Card>
-
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-5">
@@ -189,10 +294,12 @@ export default function PatientDetail() {
             <TabsTrigger value="meds">Meds</TabsTrigger>
             <TabsTrigger value="tasks">Tasks</TabsTrigger>
           </TabsList>
-
           <TabsContent value="overview" className="space-y-4">
-            <Timeline entries={mockTimeline} currentState={mockPatient.currentState} />
-            
+            {timeline.length > 0 ? (
+              <Timeline entries={timeline} currentState={patient.currentState} />
+            ) : (
+              <Card className="p-4 text-center text-muted-foreground">No timeline available for this patient.</Card>
+            )}
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-4">
               <Card className="p-4">
@@ -207,7 +314,6 @@ export default function PatientDetail() {
               </Card>
             </div>
           </TabsContent>
-
           <TabsContent value="notes">
             <Card className="p-4">
               <p className="text-muted-foreground text-center py-8">
@@ -215,7 +321,6 @@ export default function PatientDetail() {
               </p>
             </Card>
           </TabsContent>
-
           <TabsContent value="labs">
             <Card className="p-4">
               <p className="text-muted-foreground text-center py-8">
@@ -223,7 +328,6 @@ export default function PatientDetail() {
               </p>
             </Card>
           </TabsContent>
-
           <TabsContent value="meds">
             <Card className="p-4">
               <p className="text-muted-foreground text-center py-8">
@@ -231,7 +335,6 @@ export default function PatientDetail() {
               </p>
             </Card>
           </TabsContent>
-
           <TabsContent value="tasks">
             <Card className="p-4">
               <p className="text-muted-foreground text-center py-8">
@@ -241,7 +344,6 @@ export default function PatientDetail() {
           </TabsContent>
         </Tabs>
       </div>
-
       <BottomBar />
     </div>
   );
