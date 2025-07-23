@@ -28,6 +28,22 @@ export function PatientCard({ patient, onClick }: PatientCardProps) {
     }
   };
 
+  const getCardColorClass = (stage: string) => {
+    switch (stage.toLowerCase()) {
+      case 'icu':
+      case 'critical':
+        return 'border-l-4 border-l-urgent';
+      case 'post-op':
+      case 'recovery':
+        return 'border-l-4 border-l-caution';
+      case 'discharge':
+      case 'stable':
+        return 'border-l-4 border-l-stable';
+      default:
+        return 'border-l-4 border-l-medical';
+    }
+  };
+
   const formatLastUpdated = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -41,7 +57,7 @@ export function PatientCard({ patient, onClick }: PatientCardProps) {
 
   return (
     <Card 
-      className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+      className={`p-4 hover:shadow-md transition-shadow cursor-pointer ${getCardColorClass(patient.currentState)}`}
       onClick={onClick}
     >
       <div className="flex items-start gap-3">

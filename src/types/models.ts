@@ -10,6 +10,7 @@ export interface PatientMeta {
   comorbidities: string[];
   updateCounter: number;
   lastUpdated: string;
+  assignedDoctor?: string;
 }
 
 export interface TimelineEntry {
