@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { Filter, X } from "lucide-react";
 
 interface FilterPopupProps {
@@ -59,39 +61,33 @@ export function FilterPopup({
           </div>
 
           {/* Pathways */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <label className="text-sm font-medium">Pathway</label>
-            <div className="flex flex-wrap gap-2">
+            <RadioGroup value={selectedPathway} onValueChange={onPathwayChange}>
               {pathwayFilters.map((pathway) => (
-                <Button
-                  key={pathway}
-                  variant={selectedPathway === pathway ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => onPathwayChange(pathway)}
-                  className="text-xs"
-                >
-                  {pathway === 'all' ? 'All' : pathway.charAt(0).toUpperCase() + pathway.slice(1)}
-                </Button>
+                <div key={pathway} className="flex items-center space-x-2">
+                  <RadioGroupItem value={pathway} id={`pathway-${pathway}`} />
+                  <Label htmlFor={`pathway-${pathway}`} className="text-sm cursor-pointer">
+                    {pathway === 'all' ? 'All' : pathway.charAt(0).toUpperCase() + pathway.slice(1)}
+                  </Label>
+                </div>
               ))}
-            </div>
+            </RadioGroup>
           </div>
 
           {/* Stages */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <label className="text-sm font-medium">Stage</label>
-            <div className="flex flex-wrap gap-2">
+            <RadioGroup value={selectedStage} onValueChange={onStageChange}>
               {stageFilters.map((stage) => (
-                <Button
-                  key={stage}
-                  variant={selectedStage === stage ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => onStageChange(stage)}
-                  className="text-xs"
-                >
-                  {stage === 'all' ? 'All' : stage.charAt(0).toUpperCase() + stage.slice(1)}
-                </Button>
+                <div key={stage} className="flex items-center space-x-2">
+                  <RadioGroupItem value={stage} id={`stage-${stage}`} />
+                  <Label htmlFor={`stage-${stage}`} className="text-sm cursor-pointer">
+                    {stage === 'all' ? 'All' : stage.charAt(0).toUpperCase() + stage.slice(1)}
+                  </Label>
+                </div>
               ))}
-            </div>
+            </RadioGroup>
           </div>
 
           {/* Urgent Toggle */}
